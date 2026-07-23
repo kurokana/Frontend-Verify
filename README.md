@@ -1,75 +1,51 @@
-# React + TypeScript + Vite
+# Verify - Portal Web Verifikasi Dokumen Publik
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sub-project `verify` adalah aplikasi web berbasis React + TypeScript yang diperuntukkan bagi publik/masyarakat untuk memverifikasi keaslian surat fisik keluaran RS Bintang Amin (seperti Surat Permohonan Cuti dan Surat Perintah Pengerjaan Pembelian / SP3).
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🛠️ Tech Stack & Dev Server
 
-## React Compiler
+- **Framework:** React 19 + TypeScript + Vite
+- **QR Scanner:** `html5-qrcode`
+- **Styling:** Custom Responsive CSS (Kop Surat Preview & Status Cards)
+- **Dev Port:** `http://localhost:5174`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🔑 Fitur Utama
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. **Pemindaian Kode QR Kamera**:
+   - Menggunakan modul kamera HP/Browser (`html5-qrcode`) untuk memindai QR code tanda tangan digital pada lembar dokumen fisik.
+2. **Input Manual Hash / Nomor Surat**:
+   - Tab alternatif untuk memasukkan string hash tanda tangan digital atau nomor surat secara manual.
+3. **Status Verifikasi & Rincian Kriptografi**:
+   - Memanggil `GET http://localhost:8000/api/verify?hash={hash}` ke service `docstore`.
+   - Menampilkan badge status keaslian (`VALID`, `PROSES`, `INVALID`), detail sertifikat penandatangan, tanggal penandatanganan, serta preview Kop Surat resmi RS Bintang Amin.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🚀 Cara Jalankan di Development
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. **Instalasi Dependencies**:
+   ```bash
+   npm install
+   ```
+2. **Jalankan Dev Server**:
+   ```bash
+   npm run dev
+   ```
+   Aplikasi akan berjalan di `http://localhost:5174`.
 
-```
+3. **Build untuk Production**:
+   ```bash
+   npm run build
+   ```
+   Hasil kompilasi file static HTML/JS akan tersimpan di folder `dist/` untuk di-deploy ke Nginx server.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📚 Referensi Arsitektur
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+- 🗺️ **[PROJECT_MAP.md](file:///d:/Intern/RSBA%20-%20Kerja%20Praktik/DMS/Tahap%201/PROJECT_MAP.md)**
+- 🚀 **[HANDOVER_RUNNING_GUIDE.md](file:///d:/Intern/RSBA%20-%20Kerja%20Praktik/DMS/Tahap%201/HANDOVER_RUNNING_GUIDE.md)**

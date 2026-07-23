@@ -740,3 +740,151 @@ body {
   50% { transform: scale(1.02); }
   100% { transform: scale(1); }
 }
+
+/* ================================================
+   Docstore Bank Surat Badge
+   ================================================ */
+.docstore-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #064e3b, #065f46);
+  color: #d1fae5;
+  border: 1px solid #059669;
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+  animation: fadeIn 0.4s ease-out;
+}
+
+.docstore-badge svg {
+  flex-shrink: 0;
+  color: #6ee7b7;
+}
+
+.docstore-key-display {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.7rem;
+  color: #a7f3d0;
+  letter-spacing: 0.02em;
+  margin-left: auto;
+}
+
+/* ================================================
+   Manual Approval Styles (Tanda Tangan Basah)
+   ================================================ */
+.status-card.manual {
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  border: 1px solid #c7d2fe;
+}
+
+.status-card.manual .status-badge {
+  background-color: #4338ca;
+  color: #ffffff;
+}
+
+.manual-badge-text {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.manual-approval-box {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-left: 4px solid #4338ca;
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.manual-box-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #3730a3;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+  letter-spacing: 0.03em;
+}
+
+.manual-box-header svg {
+  color: #4f46e5;
+}
+
+.manual-box-desc {
+  color: #475569;
+  font-size: 0.8rem;
+  margin: 0 0 12px 0;
+}
+
+.manual-signers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.manual-signer-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.manual-signer-icon {
+  font-size: 1.3rem;
+  background: #eef2ff;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.manual-signer-info strong {
+  display: block;
+  color: #1e293b;
+  font-size: 0.88rem;
+}
+
+.manual-signer-info p {
+  color: #64748b;
+  font-size: 0.78rem;
+  margin: 2px 0 0 0;
+}
+
+.manual-time {
+  display: inline-block;
+  font-size: 0.72rem;
+  color: #475569;
+  background: #f1f5f9;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.sig-box.manual-sig {
+  border: 1px solid #a5b4fc;
+  background: #f8fafc;
+}
+
+.sig-dot.manual {
+  background-color: #6366f1;
+}
+
+

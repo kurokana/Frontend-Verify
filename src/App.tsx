@@ -375,9 +375,6 @@ function App() {
                       onChange={(e) => setManualHash(e.target.value)}
                       required
                     />
-                    <small className="form-text text-muted mt-1 block font-size-xs">
-                      ℹ️ Verifikasi wajib menggunakan Kode QR pada surat. Pencarian berdasarkan nomor surat telah dinonaktifkan.
-                    </small>
                   </div>
                   <button type="submit" className="btn btn-primary w-full" disabled={loading}>
                     {loading ? 'Memverifikasi...' : 'Verifikasi Kode QR'}
@@ -406,18 +403,15 @@ function App() {
             )}
           </section>
 
-            {result && (
+          {result && (
             <div className="result-section animation-fade-in">
               {/* Bank Surat Badge */}
               {isFromDocstore && (
                 <div className="docstore-badge">
                   <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                    <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  <span>DATA TERVERIFIKASI DARI BANK SURAT (DOCSTORE)</span>
-                  {result.meta?.docstore_key && (
-                    <code className="docstore-key-display">Key: {result.meta.docstore_key}</code>
-                  )}
+                  <span>DATA TERVERIFIKASI DIKELUARKAN RESMI OLEH RUMAH SAKIT BINTANG AMIN</span>
                 </div>
               )}
 
@@ -448,8 +442,8 @@ function App() {
                     <h3>
                       {result.verification_status === 'DISETUJUI MANUAL' || result.is_manual
                         ? 'DOKUMEN DISETUJUI SECARA MANUAL (TTD BASAH)'
-                        : result.verification_status === 'PROSES' 
-                          ? 'DOKUMEN DALAM PROSES PERSETUJUAN' 
+                        : result.verification_status === 'PROSES'
+                          ? 'DOKUMEN DALAM PROSES PERSETUJUAN'
                           : result.verification_status === 'DITOLAK'
                             ? 'DOKUMEN DITOLAK'
                             : `Dokumen ${result.is_valid ? 'ASLI & VALID' : 'TIDAK VALID'}`}
@@ -479,14 +473,11 @@ function App() {
                     <span>Tanggal Ditandatangani:</span>
                     <strong>{formatDate(result.scanned_signature.signed_at)}</strong>
                   </div>
-                  <div className="meta-row">
-                    <span>Hash QR:</span>
-                    <code className="hash-code">{result.scanned_signature.signature_hash}</code>
-                  </div>
+
                   {(result.is_valid || result.verification_status === 'PROSES' || result.is_manual) && result.verification_detail && (
                     <div className="crypto-success-detail">
                       <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                       </svg>
                       <span>
                         {result.verification_detail === 'docstore_manual_approved' && 'Terverifikasi: Surat disetujui secara manual (TTD Basah) & terdaftar di bank surat'}
@@ -514,7 +505,7 @@ function App() {
                 <div className="manual-approval-box">
                   <div className="manual-box-header">
                     <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                     </svg>
                     <span>PENANDA PERSETUJUAN MANUAL (TANDA TANGAN BASAH)</span>
                   </div>

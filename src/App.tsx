@@ -481,7 +481,7 @@ function App() {
                       </svg>
                       <span>
                         {result.verification_detail === 'docstore_manual_approved' && 'Terverifikasi: Surat disetujui secara manual (TTD Basah) & terdaftar di bank surat'}
-                        {result.verification_detail === 'docstore_verified' && 'Terverifikasi: Data dari bank surat resmi (immutable docstore)'}
+                        {result.verification_detail === 'docstore_verified' && 'Terverifikasi: Data disetujui dan dikeluarkan oleh RS Bintang Amin'}
                         {result.verification_detail === 'hash_and_openssl_match' && 'Terverifikasi: Hash SHA-256 & tanda tangan digital OpenSSL cocok'}
                         {result.verification_detail === 'hash_match' && 'Terverifikasi: Integritas data (SHA-256) terkonfirmasi'}
                         {result.verification_detail === 'hash_match_openssl_warn' && 'Terverifikasi: Integritas data terkonfirmasi (sertifikat mungkin diperbarui)'}

@@ -97,6 +97,12 @@ interface DocumentData {
     karyawan_nip?: string;
     karyawan_hp?: string;
     karyawan_jabatan?: string;
+    // Digital signature PDF specific
+    title?: string;
+    document_number?: string;
+    pdf_base64?: string;
+    user_name?: string;
+    file_name?: string;
   };
 }
 
@@ -107,20 +113,29 @@ interface VerifyResponse {
   verification_status: string;
   verification_detail?: string;
   cryptographic_error: string | null;
+  message?: string;
+  byte_counter?: {
+    file_size_bytes: number;
+    byte_counter_hash: string;
+    match: boolean;
+  };
   meta?: DocumentMeta;
-  document: DocumentData;
-  scanned_signature: Signature;
-  all_signatures: Signature[];
+  document?: DocumentData;
+  scanned_signature?: Signature;
+  signatures?: Signature[];
+  all_signatures?: Signature[];
 }
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'camera' | 'manual'>('camera');
+  const [activeTab, setActiveTab] = useState<'camera' | 'manual' | 'pdf'>('camera');
   const [manualHash, setManualHash] = useState('');
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [result, setResult] = useState<VerifyResponse | null>(null);
   // Apakah data dari docstore (bank surat) atau dari verify endpoint lama
   const [isFromDocstore, setIsFromDocstore] = useState(false);
+
 
   // Camera state
   const [isScanning, setIsScanning] = useState(false);
@@ -255,6 +270,43 @@ function App() {
     verifyHash(manualHash);
   };
 
+  const handlePdfSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!pdfFile) return;
+
+    setLoading(true);
+    setErrorMsg(null);
+    setResult(null);
+    setIsFromDocstore(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('pdf_file', pdfFile);
+
+      const response = await fetch(`${DOCSTORE_API}/verify-pdf`, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.is_valid) {
+        setResult(data);
+      } else {
+        setResult(data);
+        if (!data.document) {
+          setErrorMsg(data.message || 'Dokumen PDF tidak terdaftar atau telah dimodifikasi (ByteCounter mismatch).');
+        }
+      }
+    } catch (err: any) {
+      console.error(err);
+      setErrorMsg('Gagal terhubung ke server verifikasi. Pastikan docstore berjalan.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
@@ -299,7 +351,7 @@ function App() {
           <section className="verify-card shadow-lg">
             <h2>Verifikasi Keaslian Surat</h2>
             <p className="card-subtitle">
-              Pindai Kode QR yang tertera pada surat fisik Anda untuk memverifikasi keaslian dan validitas dokumen secara resmi.
+              Pindai Kode QR atau unggah berkas PDF untuk memverifikasi keaslian dan validitas dokumen secara resmi via ByteCounter.
             </p>
 
             <div className="tabs">
@@ -329,6 +381,20 @@ function App() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
                 Input Kode QR Hash
+              </button>
+              <button
+                className={`tab-btn ${activeTab === 'pdf' ? 'active' : ''}`}
+                onClick={() => {
+                  setActiveTab('pdf');
+                  handleStopScan();
+                  setErrorMsg(null);
+                  setResult(null);
+                }}
+              >
+                <svg className="tab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+                Upload File PDF (ByteCounter)
               </button>
             </div>
 
@@ -381,7 +447,31 @@ function App() {
                   </button>
                 </form>
               )}
+
+              {activeTab === 'pdf' && (
+                <form onSubmit={handlePdfSubmit} className="manual-form">
+                  <div className="form-group">
+                    <label htmlFor="pdf-input">Unggah File Surat PDF (.pdf)</label>
+                    <input
+                      id="pdf-input"
+                      type="file"
+                      accept="application/pdf,.pdf"
+                      onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+                      required
+                      className="form-control"
+                      style={{ padding: '0.6rem 0.8rem', border: '1px solid #cbd5e1', borderRadius: '10px', width: '100%' }}
+                    />
+                    <small style={{ color: '#64748b', display: 'block', marginTop: '0.4rem' }}>
+                      Format file wajib ber-ekstensi <strong>.pdf</strong>. Sistem akan menghitung metric ByteCounter (SHA-256 Checksum) untuk mencocokkan keaslian dokumen di Bank Surat docstore.
+                    </small>
+                  </div>
+                  <button type="submit" className="btn btn-primary w-full" disabled={loading || !pdfFile} style={{ marginTop: '1rem' }}>
+                    {loading ? 'Memeriksa ByteCounter PDF...' : 'Verifikasi Keaslian Berkas PDF'}
+                  </button>
+                </form>
+              )}
             </div>
+
 
             {loading && (
               <div className="loading-spinner">
@@ -465,14 +555,27 @@ function App() {
                 </div>
 
                 <div className="status-meta">
-                  <div className="meta-row">
-                    <span>Penandatangan Scanned:</span>
-                    <strong>{result.scanned_signature.signer_name} ({result.scanned_signature.signer_role || 'Staf'})</strong>
-                  </div>
-                  <div className="meta-row">
-                    <span>Tanggal Ditandatangani:</span>
-                    <strong>{formatDate(result.scanned_signature.signed_at)}</strong>
-                  </div>
+                  {result.scanned_signature && (
+                    <>
+                      <div className="meta-row">
+                        <span>Penandatangan Scanned:</span>
+                        <strong>{result.scanned_signature.signer_name} ({result.scanned_signature.signer_role || 'Staf'})</strong>
+                      </div>
+                      <div className="meta-row">
+                        <span>Tanggal Ditandatangani:</span>
+                        <strong>{formatDate(result.scanned_signature.signed_at)}</strong>
+                      </div>
+                    </>
+                  )}
+
+                  {result.byte_counter && (
+                    <div style={{ marginTop: '0.8rem', padding: '0.8rem', backgroundColor: '#f1f5f9', borderRadius: '10px', fontSize: '0.82rem' }}>
+                      <div style={{ fontWeight: 600, color: '#1e293b', marginBottom: '0.2rem' }}>Metric ByteCounter Verification:</div>
+                      <div style={{ fontFamily: 'monospace', color: '#334155' }}>File Size: {result.byte_counter.file_size_bytes} bytes</div>
+                      <div style={{ fontFamily: 'monospace', color: '#475569', wordBreak: 'break-all', marginTop: '0.2rem' }}>SHA-256: {result.byte_counter.byte_counter_hash}</div>
+                    </div>
+                  )}
+
 
                   {(result.is_valid || result.verification_status === 'PROSES' || result.is_manual) && result.verification_detail && (
                     <div className="crypto-success-detail">
@@ -480,6 +583,7 @@ function App() {
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                       </svg>
                       <span>
+                        {result.verification_detail === 'byte_counter_hash_matched' && 'Terverifikasi: Metric ByteCounter (SHA-256 Checksum) cocok 100% dengan bank surat'}
                         {result.verification_detail === 'docstore_manual_approved' && 'Terverifikasi: Surat disetujui secara manual (TTD Basah) & terdaftar di bank surat'}
                         {result.verification_detail === 'docstore_verified' && 'Terverifikasi: Data disetujui dan dikeluarkan oleh RS Bintang Amin'}
                         {result.verification_detail === 'hash_and_openssl_match' && 'Terverifikasi: Hash SHA-256 & tanda tangan digital OpenSSL cocok'}
@@ -498,6 +602,7 @@ function App() {
                     </div>
                   )}
                 </div>
+
               </div>
 
               {/* Box Penanda Persetujuan Manual */}
@@ -530,8 +635,8 @@ function App() {
                       <div className="manual-signer-card">
                         <div className="manual-signer-icon">✍️</div>
                         <div className="manual-signer-info">
-                          <strong>{result.scanned_signature.signer_name}</strong>
-                          <p>{result.scanned_signature.signer_role || 'Pejabat Penyetuju Manual'}</p>
+                          <strong>{result.scanned_signature?.signer_name || 'Pejabat Penyetuju'}</strong>
+                          <p>{result.scanned_signature?.signer_role || 'Pejabat Penyetuju Manual'}</p>
                         </div>
                       </div>
                     )}
@@ -540,25 +645,28 @@ function App() {
               )}
 
               {/* Document Container Sheet */}
-              <div className="document-sheet shadow-lg">
-                <div className="sheet-border-top"></div>
+              {result.document && (
+                <div className="document-sheet shadow-lg">
+                  <div className="sheet-border-top"></div>
 
-                {/* Visual Kop Surat */}
-                <div className="kop-surat">
-                  <h2>RS BINTANG AMIN</h2>
-                  <p>Jl. Pramuka No.27, Kemiling Permai, Kec. Kemiling, Kota Bandar Lampung, Lampung 35151</p>
-                  <p className="kop-telp">Telp: (0721) 561234 | Email: [sdm.rsbintangamin@gmail.com]</p>
-                  <div className="kop-divider"></div>
-                </div>
+                  {/* Visual Kop Surat */}
+                  <div className="kop-surat">
+                    <h2>RS BINTANG AMIN</h2>
+                    <p>Jl. Pramuka No.27, Kemiling Permai, Kec. Kemiling, Kota Bandar Lampung, Lampung 35151</p>
+                    <p className="kop-telp">Telp: (0721) 561234 | Email: [sdm.rsbintangamin@gmail.com]</p>
+                    <div className="kop-divider"></div>
+                  </div>
 
-                <div className="document-title">
-                  <h4>
-                    {result.document.type === 'sp3'
-                      ? 'SURAT PERINTAH PENGERJAAN PEMBELIAN (SP3)'
-                      : 'SURAT PERMOHONAN PENGAJUAN CUTI'}
-                  </h4>
-                  <p className="doc-num">Nomor: {result.document.number}</p>
-                </div>
+                  <div className="document-title">
+                    <h4>
+                      {result.document?.type === 'sp3'
+                        ? 'SURAT PERINTAH PENGERJAAN PEMBELIAN (SP3)'
+                        : result.document?.type === 'cuti'
+                        ? 'SURAT PERMOHONAN PENGAJUAN CUTI'
+                        : 'DOKUMEN SURAT TANDA TANGAN DIGITAL (MEKARI VAULT)'}
+                    </h4>
+                    <p className="doc-num">Nomor: {result.document?.number}</p>
+                  </div>
 
                 {/* Render Content Specific */}
                 <div className="document-content">
@@ -661,6 +769,58 @@ function App() {
                       </table>
                     </div>
                   )}
+
+                  {/* Digital Signature PDF Specific */}
+                  {(result.document.type === 'digital_signature' || !['sp3', 'cuti'].includes(result.document.type)) && (
+                    <div className="digital-signature-details">
+                      <p style={{ color: '#475569', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                        Dokumen ini adalah berkas PDF Tanda Tangan Digital resmi yang terdaftar di Docstore Bank Surat RS Bintang Amin.
+                      </p>
+
+                      <table className="doc-meta-table">
+                        <tbody>
+                          {result.document.content.title && (
+                            <tr>
+                              <td><strong>Judul Surat</strong></td>
+                              <td>: {result.document.content.title}</td>
+                            </tr>
+                          )}
+                          <tr>
+                            <td><strong>Nomor Dokumen</strong></td>
+                            <td>: {result.document.number}</td>
+                          </tr>
+                          {result.document.content.user_name && (
+                            <tr>
+                              <td><strong>Penandatangan / Super Admin</strong></td>
+                              <td>: {result.document.content.user_name}</td>
+                            </tr>
+                          )}
+                          {result.byte_counter && (
+                            <tr>
+                              <td><strong>Metric ByteCounter SHA-256</strong></td>
+                              <td style={{ fontFamily: 'monospace', wordBreak: 'break-all', fontSize: '0.82rem' }}>
+                                : {result.byte_counter.byte_counter_hash}
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+
+                      {/* PDF Viewer Stream */}
+                      {result.document.content.pdf_base64 && (
+                        <div style={{ marginTop: '1.5rem' }}>
+                          <h5 className="section-title">Pratinjau Berkas PDF Terdaftar:</h5>
+                          <div style={{ width: '100%', height: '550px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #cbd5e1', marginTop: '0.5rem' }}>
+                            <iframe
+                              src={`data:application/pdf;base64,${result.document.content.pdf_base64}#view=FitH`}
+                              style={{ width: '100%', height: '100%', border: 'none' }}
+                              title="Pratinjau PDF Docstore"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="sheet-divider"></div>
@@ -669,7 +829,7 @@ function App() {
                 <div className="signatures-section">
                   <h5>Daftar Tanda Tangan Digital & Approval Dokumen:</h5>
                   <div className="signatures-grid">
-                    {result.all_signatures.map((sig, idx) => {
+                    {(result.all_signatures || result.signatures || []).map((sig, idx) => {
                       const isSigManual = sig.is_manual || ['manual', 'approved manual', 'disetujui manual'].includes((sig.status || '').toLowerCase());
                       return (
                         <div key={idx} className={`sig-box ${sig.is_current_scanned ? 'highlight' : ''} ${isSigManual ? 'manual-sig' : ''}`}>
@@ -695,8 +855,9 @@ function App() {
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
+        )}
         </div>
       </main>
     </div>

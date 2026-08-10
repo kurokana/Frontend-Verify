@@ -339,7 +339,7 @@ body {
   animation: spin 1s linear infinite;
 }
 
-/* Verification Result Cards */
+/* Verification Result Cards & Banners */
 .result-section {
   margin-top: 2rem;
   display: flex;
@@ -347,32 +347,153 @@ body {
   gap: 1.5rem;
 }
 
-.status-card {
-  border-radius: 20px;
-  padding: 1.5rem;
-  border: 1px solid transparent;
+.status-banner {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  border: 1.5px solid transparent;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.status-banner.success {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.status-banner.danger {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.status-banner.warning {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #92400e;
+}
+
+.banner-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.status-banner.success .banner-icon {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.status-banner.danger .banner-icon {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.status-banner.warning .banner-icon {
+  background: #fef3c7;
+  color: #f59e0b;
+}
+
+.banner-icon svg {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  flex-shrink: 0 !important;
+}
+
+.banner-content h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.banner-content p {
+  margin: 0;
+  font-size: 0.88rem;
+  opacity: 0.9;
+}
+
+/* Result Card */
+.result-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  text-align: left;
   box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
 }
 
-.status-card.valid {
-  background: var(--success-bg);
-  border-color: var(--success-border);
-  color: var(--success-text);
+.result-card.valid {
+  border-left: 4px solid #10b981;
 }
 
-.status-card.invalid {
-  background: var(--danger-bg);
-  border-color: var(--danger-border);
-  color: var(--danger-text);
+.result-card.invalid, .result-card.danger {
+  border-left: 4px solid #ef4444;
 }
 
-.status-card.process {
-  background: var(--warning-bg);
-  border-color: var(--warning-border);
-  color: var(--warning-text);
+.result-card.warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.result-header h4 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.result-desc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.byte-counter-info {
+  margin-top: 1rem;
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.byte-title {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.35rem;
+}
+
+.byte-size {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-family: monospace;
+}
+
+.byte-hash {
+  font-size: 0.8rem;
+  color: #4338ca;
+  font-family: monospace;
+  word-break: break-all;
+  margin-top: 0.25rem;
 }
 
 .status-header {

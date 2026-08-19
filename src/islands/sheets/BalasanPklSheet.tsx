@@ -42,6 +42,31 @@ export const BalasanPklSheet: React.FC<BalasanPklSheetProps> = ({
         </tbody>
       </table>
 
+      {/* Daftar Mahasiswa jika ada */}
+      {content.mahasiswa && content.mahasiswa.length > 0 && (
+        <>
+          <h5 className="section-title" style={{ marginTop: '1.2rem' }}>Daftar Mahasiswa Praktik:</h5>
+          <table className="items-table">
+            <thead>
+              <tr>
+                <th className="text-center" style={{ width: '40px' }}>No</th>
+                <th>Nama Mahasiswa</th>
+                <th className="text-center">NPM / NIM</th>
+              </tr>
+            </thead>
+            <tbody>
+              {content.mahasiswa.map((m: any, idx: number) => (
+                <tr key={idx}>
+                  <td className="text-center">{idx + 1}</td>
+                  <td><strong>{m.nama || '-'}</strong></td>
+                  <td className="text-center font-mono">{m.npm || '-'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
       <h5 className="section-title" style={{ marginTop: '1.2rem' }}>Rincian Biaya Praktik:</h5>
       <table className="items-table">
         <thead>

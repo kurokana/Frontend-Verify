@@ -11,22 +11,32 @@ import { DocumentSheetIsland } from './islands/DocumentSheetIsland';
 const DOCSTORE_API = 'http://localhost:8000/api';
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const SHA256_PATTERN = /^[0-9a-f]{64}$/i;
+const HASH_PATTERN = /^([0-9a-f]{16,128}|(MANUAL|REJECTED|MOCK|SIGNED)_[a-z0-9_]+|[a-z0-9_\-\.]{8,128})$/i;
 
 function detectAndExtractKey(input: string): { type: 'uuid' | 'hash' | 'unknown'; key: string } {
   const trimmed = input.trim();
   try {
     const url = new URL(trimmed);
-    const keyParam = url.searchParams.get('key');
-    if (keyParam && UUID_PATTERN.test(keyParam)) {
-      return { type: 'uuid', key: keyParam };
+    const keyParam = url.searchParams.get('key') || url.searchParams.get('hash');
+    if (keyParam) {
+      const cleanKey = keyParam.trim();
+      if (UUID_PATTERN.test(cleanKey)) return { type: 'uuid', key: cleanKey };
+      if (HASH_PATTERN.test(cleanKey)) return { type: 'hash', key: cleanKey };
+    }
+
+    const pathParts = url.pathname.split('/').filter(Boolean);
+    const lastPart = pathParts[pathParts.length - 1];
+    if (lastPart) {
+      const cleanPart = lastPart.trim();
+      if (UUID_PATTERN.test(cleanPart)) return { type: 'uuid', key: cleanPart };
+      if (HASH_PATTERN.test(cleanPart)) return { type: 'hash', key: cleanPart };
     }
   } catch { }
 
   if (UUID_PATTERN.test(trimmed)) {
     return { type: 'uuid', key: trimmed };
   }
-  if (SHA256_PATTERN.test(trimmed)) {
+  if (HASH_PATTERN.test(trimmed)) {
     return { type: 'hash', key: trimmed };
   }
   return { type: 'unknown', key: trimmed };

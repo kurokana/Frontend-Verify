@@ -95,7 +95,7 @@ export const PdfViewerWithStamp: React.FC<PdfViewerWithStampProps> = ({
 
           pageDiv.appendChild(canvas);
 
-          // Note: Hard-stamped PDF files already contain the Mekari Vault Seal directly inside Page 1 PDF stream.
+          // Note: Hard-stamped PDF files already contain the RSBA QR Seal directly inside Page 1 PDF stream.
           // Optional dynamic overlay is available for legacy fallback.
           if (pageNum === 1 && (stampX === -1)) {
             const stampDiv = document.createElement('div');
@@ -109,28 +109,36 @@ export const PdfViewerWithStamp: React.FC<PdfViewerWithStampProps> = ({
             }, 0);
 
             stampDiv.style.transformOrigin = 'top left';
-            stampDiv.style.background = 'rgba(255, 255, 255, 0.96)';
+            stampDiv.style.background = 'rgba(255, 255, 255, 0.98)';
             stampDiv.style.padding = '10px 12px';
             stampDiv.style.borderRadius = '12px';
-            stampDiv.style.border = '2px solid #10b981';
-            stampDiv.style.boxShadow = '0 10px 25px rgba(0,0,0,0.15), 0 0 0 3px rgba(16, 185, 129, 0.15)';
-            stampDiv.style.width = '190px';
+            stampDiv.style.border = '2px solid #059669';
+            stampDiv.style.boxShadow = '0 10px 25px rgba(0,0,0,0.18), 0 0 0 3px rgba(16, 185, 129, 0.2)';
+            stampDiv.style.width = '230px';
             stampDiv.style.zIndex = '20';
             stampDiv.style.pointerEvents = 'none';
 
             const displayDate = signedAt.includes('WIB') ? signedAt : `${signedAt} WIB`;
 
             stampDiv.innerHTML = `
-              <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #d1fae5; padding-bottom: 4px; margin-bottom: 4px;">
-                <div style="display: flex; align-items: center; gap: 4px;">
-                  <div style="width: 14px; height: 14px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 9px; font-weight: 900; flex-shrink: 0;">✓</div>
-                  <span style="font-size: 8.5px; font-weight: 900; text-transform: uppercase; color: #065f46; letter-spacing: 0.05em;">SIGNED BY MEKARI VAULT</span>
+              <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #d1fae5; padding-bottom: 5px; margin-bottom: 6px;">
+                <div style="display: flex; align-items: center; gap: 5px;">
+                  <div style="width: 15px; height: 15px; background: #059669; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 9px; font-weight: 900; flex-shrink: 0;">✓</div>
+                  <span style="font-size: 8.5px; font-weight: 900; text-transform: uppercase; color: #065f46; letter-spacing: 0.04em;">E-SIGNATURE & VERIFIKASI RSBA</span>
                 </div>
               </div>
-              <div style="font-size: 11px; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${signerName}</div>
-              <div style="font-size: 8.5px; color: #64748b; font-family: monospace; margin-top: 2px;">${displayDate}</div>
-              <div style="font-size: 8px; font-family: monospace; color: #4338ca; margin-top: 3px; background: #eef2ff; padding: 2px 5px; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                SHA: ${byteHash.substring(0, 14)}...
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
+                  <div style="width: 50px; height: 50px; background: #f8fafc; display: flex; align-items: center; justify-content: center; font-size: 7px; color: #64748b; text-align: center; border-radius: 4px;">
+                    QR CODE
+                  </div>
+                  <span style="font-size: 6px; color: #64748b; font-weight: 600; margin-top: 1px;">Scan Verifikasi</span>
+                </div>
+                <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                  <div style="font-size: 11px; font-weight: 800; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${signerName}</div>
+                  <div style="font-size: 8.5px; color: #64748b; font-family: monospace;">${displayDate}</div>
+                  <div style="font-size: 7px; color: #059669; font-weight: 700; margin-top: 1px;">Dokumen Sah Terdaftar</div>
+                </div>
               </div>
             `;
             pageDiv.appendChild(stampDiv);
@@ -178,7 +186,7 @@ export const PdfViewerWithStamp: React.FC<PdfViewerWithStampProps> = ({
       >
         {loading && (
           <div style={{ color: '#94a3b8', textAlign: 'center', padding: '40px', fontSize: '0.9rem' }}>
-            Memuat dan Merekonstruksi Halaman PDF + Stempel Mekari Vault...
+            Memuat dan Merekonstruksi Halaman PDF + Stempel QR Digital RSBA...
           </div>
         )}
         {error && (

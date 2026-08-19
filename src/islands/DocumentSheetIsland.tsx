@@ -36,7 +36,7 @@ export const DocumentSheetIsland: React.FC<DocumentSheetIslandProps> = ({
             ? 'SURAT PERINTAH PENGERJAAN PEMBELIAN (SP3)'
             : doc.type === 'cuti'
             ? 'SURAT PERMOHONAN PENGAJUAN CUTI'
-            : 'DOKUMEN SURAT TANDA TANGAN DIGITAL (MEKARI VAULT)'}
+            : 'DOKUMEN SURAT TANDA TANGAN DIGITAL & QR VERIFIKASI'}
         </h4>
         <p className="doc-num">Nomor: {doc.number}</p>
       </div>

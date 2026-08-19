@@ -18,11 +18,11 @@ export const ManualHashIsland: React.FC<ManualHashIslandProps> = ({ onSubmit, lo
   return (
     <form onSubmit={handleSubmit} className="manual-form">
       <div className="form-group">
-        <label htmlFor="hash-input">Kode Hash QR Surat (UUID / SHA256)</label>
+        <label htmlFor="hash-input">Kode Hash QR Surat</label>
         <input
           id="hash-input"
           type="text"
-          placeholder="Tempelkan docstore key (UUID) atau QR hash dari surat..."
+          placeholder="Tempelkan key QR Surat..."
           value={manualHash}
           onChange={(e) => setManualHash(e.target.value)}
           required

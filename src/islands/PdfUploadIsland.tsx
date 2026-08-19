@@ -26,9 +26,6 @@ export const PdfUploadIsland: React.FC<PdfUploadIslandProps> = ({ onSubmit, load
           onChange={(e) => setPdfFile(e.target.files ? e.target.files[0] : null)}
           required
         />
-        <p className="field-hint">
-          Format file wajib ber-ekstensi <strong>.pdf</strong>. Sistem akan menghitung metric ByteCounter (SHA-256 Checksum) untuk mencocokkan keaslian dokumen di Bank Surat docstore.
-        </p>
       </div>
 
       <button type="submit" className="btn btn-primary w-full" disabled={loading || !pdfFile}>

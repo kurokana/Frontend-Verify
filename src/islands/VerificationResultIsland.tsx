@@ -29,10 +29,10 @@ export const VerificationResultIsland: React.FC<VerificationResultIslandProps> =
             {result.is_valid
               ? 'DOKUMEN VALID & TERDAFTAR RESMI'
               : isRejected
-              ? 'DOKUMEN DITOLAK / TIDAK BERLAKU'
-              : isInProcess
-              ? 'DOKUMEN MASIH DALAM PROSES'
-              : 'DOKUMEN TIDAK VALID / TELAH DIMODIFIKASI'}
+                ? 'DOKUMEN DITOLAK / TIDAK BERLAKU'
+                : isInProcess
+                  ? 'DOKUMEN MASIH DALAM PROSES'
+                  : 'DOKUMEN TIDAK VALID / TELAH DIMODIFIKASI'}
           </h3>
           <p>
             {result.message ||
@@ -53,10 +53,10 @@ export const VerificationResultIsland: React.FC<VerificationResultIslandProps> =
             {result.is_valid
               ? 'Dokumen Resmi RS Bintang Amin'
               : isRejected
-              ? 'Dokumen Ditolak oleh Pejabat'
-              : isInProcess
-              ? 'Dokumen Belum Selesai Disetujui'
-              : 'Dokumen TIDAK VALID'}
+                ? 'Dokumen Ditolak oleh Pejabat'
+                : isInProcess
+                  ? 'Dokumen Belum Selesai Disetujui'
+                  : 'Dokumen TIDAK VALID'}
           </h4>
         </div>
         <p className="result-desc">
@@ -64,14 +64,6 @@ export const VerificationResultIsland: React.FC<VerificationResultIslandProps> =
             ? 'Dokumen ini terdaftar resmi dan terlindungi oleh mekanisme penandatanganan digital.'
             : result.cryptographic_error || 'Dokumen tidak ditemukan atau data biner telah berubah.'}
         </p>
-
-        {result.byte_counter && (
-          <div className="byte-counter-info">
-            <div className="byte-title">Metric ByteCounter Verification:</div>
-            <div className="byte-size">File Size: {result.byte_counter.file_size_bytes} bytes</div>
-            <div className="byte-hash">SHA-256: {result.byte_counter.byte_counter_hash}</div>
-          </div>
-        )}
       </div>
     </div>
   );

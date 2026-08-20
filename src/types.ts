@@ -4,6 +4,7 @@ export interface DocumentSignatureItem {
   status: string;
   signed_at?: string | null;
   signature_hash?: string;
+  original_data?: string;
   is_current_scanned?: boolean;
   is_manual?: boolean;
 }

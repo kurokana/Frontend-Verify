@@ -13,12 +13,13 @@ export const SignaturesGridIsland: React.FC<SignaturesGridIslandProps> = ({ sign
       <div className="signatures-grid">
         {signatures.map((sig, idx) => {
           const isSigManual = sig.is_manual || ['manual', 'approved manual', 'disetujui manual'].includes((sig.status || '').toLowerCase());
+          const isApproved = ['approved', 'valid', 'signed', 'disetujui'].includes((sig.status || '').toLowerCase());
           return (
             <div key={idx} className={`sig-box ${sig.is_current_scanned ? 'highlight' : ''} ${isSigManual ? 'manual-sig' : ''}`}>
               <div className="sig-status">
-                <span className={`sig-dot ${isSigManual ? 'manual' : (sig.status === 'approved' ? 'approved' : 'pending')}`}></span>
+                <span className={`sig-dot ${isSigManual ? 'manual' : (isApproved ? 'approved' : 'pending')}`}></span>
                 <span className="sig-status-text">
-                  {isSigManual ? '✍️ MANUAL (TTD BASAH)' : (sig.status === 'approved' ? 'DISETUJUI' : sig.status)}
+                  {isSigManual ? '✍️ MANUAL (TTD BASAH)' : (isApproved ? 'DISETUJUI' : sig.status)}
                 </span>
               </div>
               <div className="sig-user">

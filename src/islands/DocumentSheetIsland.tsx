@@ -58,9 +58,87 @@ export const DocumentSheetIsland: React.FC<DocumentSheetIslandProps> = ({
     }
   };
 
+  const isCancelled =
+    doc.status === 'cancelled' ||
+    doc.status === 'dibatalkan' ||
+    doc.status === 'batal' ||
+    result.verification_status === 'DIBATALKAN' ||
+    result.verification_detail === 'docstore_cancelled';
+
+  const isRejected =
+    doc.status === 'rejected' ||
+    doc.status === 'ditolak' ||
+    result.verification_status === 'DITOLAK' ||
+    result.verification_detail === 'docstore_rejected';
+
+  const isPending = 
+    !isCancelled &&
+    !isRejected &&
+    (doc.status === 'pending' || 
+     doc.status === 'waiting' || 
+     result.verification_status === 'PENDING' || 
+     result.verification_status === 'MENUNGGU PERSETUJUAN');
+
   return (
     <div className="document-sheet shadow-lg">
       <div className="sheet-border-top"></div>
+
+      {isCancelled && (
+        <div style={{
+          background: '#fef2f2',
+          border: '1px dashed #ef4444',
+          borderRadius: '8px',
+          padding: '8px 14px',
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          fontSize: '11px',
+          fontWeight: 700,
+          color: '#b91c1c',
+          letterSpacing: '0.02em',
+        }}>
+          <span>⛔ STATUS: DOKUMEN INI TELAH DIBATALKAN RESMI (TIDAK BERLAKU RESMI)</span>
+        </div>
+      )}
+
+      {isRejected && (
+        <div style={{
+          background: '#fef2f2',
+          border: '1px dashed #ef4444',
+          borderRadius: '8px',
+          padding: '8px 14px',
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          fontSize: '11px',
+          fontWeight: 700,
+          color: '#b91c1c',
+          letterSpacing: '0.02em',
+        }}>
+          <span>❌ STATUS: DOKUMEN INI DITOLAK OLEH PEJABAT (TIDAK BERLAKU)</span>
+        </div>
+      )}
+
+      {isPending && (
+        <div style={{
+          background: '#fffbeb',
+          border: '1px dashed #f59e0b',
+          borderRadius: '8px',
+          padding: '8px 14px',
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          fontSize: '11px',
+          fontWeight: 700,
+          color: '#b45309',
+          letterSpacing: '0.02em',
+        }}>
+          <span>⚠️ STATUS: DRAF / MENUNGGU PERSETUJUAN PEJABAT (BELUM BERLAKU RESMI)</span>
+        </div>
+      )}
 
       {/* Visual Kop Surat */}
       <div className="kop-surat">

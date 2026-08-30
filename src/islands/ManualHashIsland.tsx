@@ -6,7 +6,8 @@ interface ManualHashIslandProps {
 }
 
 export const ManualHashIsland: React.FC<ManualHashIslandProps> = ({ onSubmit, loading }) => {
-  const [manualHash, setManualHash] = useState('');
+  const initialHash = new URLSearchParams(window.location.search).get('key') || new URLSearchParams(window.location.search).get('hash') || '';
+  const [manualHash, setManualHash] = useState(initialHash);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

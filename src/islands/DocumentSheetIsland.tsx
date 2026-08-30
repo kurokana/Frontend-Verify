@@ -6,6 +6,7 @@ import { Sp3Sheet } from './sheets/Sp3Sheet';
 import { BalasanPklSheet } from './sheets/BalasanPklSheet';
 import { BalasanPenelitianSheet } from './sheets/BalasanPenelitianSheet';
 import { PerintahTugasSheet } from './sheets/PerintahTugasSheet';
+import { DisposisiSheet } from './sheets/DisposisiSheet';
 import { DigitalSignatureSheet } from './sheets/DigitalSignatureSheet';
 
 interface DocumentSheetIslandProps {
@@ -36,6 +37,9 @@ export const DocumentSheetIsland: React.FC<DocumentSheetIslandProps> = ({
         return 'SURAT BALASAN PENELITIAN';
       case 'perintah_tugas':
         return 'SURAT PERINTAH TUGAS';
+      case 'surat_disposisi':
+      case 'disposisi':
+        return 'LEMBAR PENERUS / DISPOSISI';
       default:
         return 'DOKUMEN SURAT TANDA TANGAN DIGITAL & QR VERIFIKASI';
     }
@@ -53,6 +57,9 @@ export const DocumentSheetIsland: React.FC<DocumentSheetIslandProps> = ({
         return <BalasanPenelitianSheet content={content} formatDate={formatDate} formatCurrency={formatCurrency} />;
       case 'perintah_tugas':
         return <PerintahTugasSheet content={content} />;
+      case 'surat_disposisi':
+      case 'disposisi':
+        return <DisposisiSheet content={content} formatDate={formatDate} />;
       default:
         return <DigitalSignatureSheet doc={doc} content={content} result={result} />;
     }
@@ -72,7 +79,13 @@ export const DocumentSheetIsland: React.FC<DocumentSheetIslandProps> = ({
 
       <div className="document-title">
         <h4>{getDocumentTitle()}</h4>
-        <p className="doc-num">Nomor: {doc.number}</p>
+        {doc.type === 'surat_disposisi' || doc.type === 'disposisi' ? (
+          <p className="doc-num" style={{ fontWeight: 'bold', color: '#4f46e5', marginTop: '2px' }}>
+            RS BINTANG AMIN - DIREKTUR
+          </p>
+        ) : (
+          <p className="doc-num">Nomor: {doc.number}</p>
+        )}
       </div>
 
       {/* Render Content Specific */}

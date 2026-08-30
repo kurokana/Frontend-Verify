@@ -142,11 +142,12 @@ export default function App() {
     }
   }, []);
 
-  // Auto verify if ?key= URL parameter is present
+  // Auto verify if ?key= or ?hash= URL parameter is present
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const keyParam = params.get('key');
+    const keyParam = params.get('key') || params.get('hash');
     if (keyParam) {
+      setActiveTab('manual');
       verifyHash(keyParam);
     }
   }, [verifyHash]);

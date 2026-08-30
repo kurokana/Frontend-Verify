@@ -8,7 +8,7 @@ import { PdfUploadIsland } from './islands/PdfUploadIsland';
 import { VerificationResultIsland } from './islands/VerificationResultIsland';
 import { DocumentSheetIsland } from './islands/DocumentSheetIsland';
 
-const DOCSTORE_API = 'http://localhost:8000/api';
+const DOCSTORE_API = import.meta.env.VITE_DOCSTORE_API || 'http://docstore.test/api';
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const HASH_PATTERN = /^([0-9a-f]{16,128}|(MANUAL|REJECTED|MOCK|SIGNED)_[a-z0-9_]+|[a-z0-9_\-\.]{8,128})$/i;
